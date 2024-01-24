@@ -1,12 +1,20 @@
 import subprocess
 import os
 import speedtest
-import time  # Import the time module for sleep
+import time
 
 def get_upload_speed():
     st = speedtest.Speedtest()
-    upload_speed = st.upload() / 10**6  # Convert to Mbps
+    upload_speed = st.upload() / 10**6
     return upload_speed
+
+def read_config():
+    with open("config.txt", "r") as file:
+        config = {}
+        for line in file:
+            key, value = line.strip().split(": ")
+            config[key] = value
+        return config
 
 def start_livestream(video_url, stream_key):
     command = (
@@ -22,14 +30,18 @@ def start_livestream(video_url, stream_key):
         while True:
             upload_speed = get_upload_speed()
             print(f"Upload Speed: {upload_speed:.2f} Mbps", end='\r')
-            time.sleep(1)  # Sleep for 1 second to avoid excessive updates
-            os.system('clear')  # Clear the terminal screen
+            time.sleep(1)
+            os.system('clear')
     except KeyboardInterrupt:
         process.terminate()
         print("\nLivestream process terminated.")
 
 if __name__ == "__main__":
-    video_url = "https://your_video_url_here"
-    stream_key = "your_stream_key_here"
+    config = read_config()
+    video_url = config.get("VideoURL", "")
+    stream_key = config.get("StreamKey", "")
     
-    start_livestream(video_url, stream_key)
+    if video_url and stream_key:
+        start_livestream(video_url, stream_key)
+    else:
+        print("Please provide a valid VideoURL and StreamKey in the config.txt file.")
