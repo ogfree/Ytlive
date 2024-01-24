@@ -1,5 +1,12 @@
 import subprocess
 import os
+import speedtest
+import time  # Import the time module for sleep
+
+def get_upload_speed():
+    st = speedtest.Speedtest()
+    upload_speed = st.upload() / 10**6  # Convert to Mbps
+    return upload_speed
 
 def start_livestream(video_url, stream_key):
     command = (
@@ -13,13 +20,16 @@ def start_livestream(video_url, stream_key):
 
     try:
         while True:
-            pass
+            upload_speed = get_upload_speed()
+            print(f"Upload Speed: {upload_speed:.2f} Mbps", end='\r')
+            time.sleep(1)  # Sleep for 1 second to avoid excessive updates
+            os.system('clear')  # Clear the terminal screen
     except KeyboardInterrupt:
         process.terminate()
-        print("Livestream process terminated.")
+        print("\nLivestream process terminated.")
 
 if __name__ == "__main__":
-    video_url = "https://rr1---sn-p5qddn76.googlevideo.com/videoplayback?expire=1706109186&ei=otSwZeLyDOD7zLUP_-ineA&ip=35.245.111.34&id=o-AKGozhCeQvMvCRFxarmj4OUYj_UygJFpTQWCjLY_0rV1&itag=22&source=youtube&requiressl=yes&xpc=EgVo2aDSNQ%3D%3D&mh=T8&mm=31%2C26&mn=sn-p5qddn76%2Csn-ab5sznzz&ms=au%2Conr&mv=u&mvi=1&pl=20&vprv=1&mime=video%2Fmp4&cnr=14&ratebypass=yes&dur=532.387&lmt=1582612547973840&mt=1706087202&fvip=3&fexp=24007246&c=ANDROID_MUSIC&txp=6316222&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cxpc%2Cvprv%2Cmime%2Ccnr%2Cratebypass%2Cdur%2Clmt&sig=AJfQdSswRAIgQkpClIX3NRtghDGDU12ItjdOPaaKKe9jRm1X0e1KVjoCIBwavN6Q9ajEO8ZNUGa6dm-H4jMISn_-aMXOpIVdlZ1C&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl&lsig=AAO5W4owRAIgTd8ILV0U5q3TSXJ2YGjFtp0Z5monrRPIbuecjtzUmlACIEm9ygL61fTSbi-vacfglAQZykVfvLHmsuCFN-o13HwL"
-    stream_key = "ymfp-azxz-0mw0-rv6x-9jxg"
+    video_url = "https://your_video_url_here"
+    stream_key = "your_stream_key_here"
     
     start_livestream(video_url, stream_key)
